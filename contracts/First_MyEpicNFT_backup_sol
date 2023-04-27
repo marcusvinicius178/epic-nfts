@@ -1,0 +1,35 @@
+pragma solidity ^0.8.1;
+// Primeiro importamos alguns contratos do OpenZeppelin.
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+import "hardhat/console.sol";
+// Nós herdamos o contrato que importamos. Isso significa que
+// teremos acesso aos métodos do contrato herdado.
+contract MyEpicNFT is ERC721URIStorage {
+    // Mágica dada pelo OpenZeppelin para nos ajudar a observar os tokenIds.
+    using Counters for Counters.Counter;
+    Counters.Counter private _tokenIds;
+
+    // Aqui esta o codigo do nosso SVG. So precisaremos alterar as palavras que vao ser exibidas. Todo o resto permanece igual.
+    // Entao, fazemos uma variavel baseSvg aqui que todos os nossos NFTs vao usar.
+    string baseSvg = "<svg  xmlns='http://www.w3.org/2000/svg'  preserveAspectRatio='xMinYMin meet'  viewBox='0 0 350 350'>  <defs>    <linearGradient id='Gradient1'>      <stop class='stop1' offset='0%'/>      <stop class='stop2' offset='50%'/>      <stop class='stop3' offset='100%'/>    </linearGradient>  </defs>  <style>    .base {      fill: blue;      font-family: serif;      font-size: 20px;      color: #FFF;    }    .stop1 { stop-color: green; }    .stop2 { stop-color: white; stop-opacity: 0; }    .stop3 { stop-color: yellow; }      </style>  <rect width='100%' height='100%' fill='url(#Gradient1)' />  <text    x='50%'    y='50%'    class='base'    dominant-baseline='middle'    text-anchor='middle'  >";
+
+
+
+    // Nós precisamos passar o nome do nosso token NFT e o símbolo dele.
+    constructor() ERC721 ("SquareNFT", "SQUARE"){
+      console.log("Esse eh meu contrato de NFT! Tchu-hu");
+    }
+    // Uma função que o nosso usuário irá chamar para pegar sua NFT.
+    function makeAnEpicNFT() public {
+        // Pega o tokenId atual, que começa por 0.
+        uint256 newItemId = _tokenIds.current();
+        // Minta ("cunha") o NFT para o sender (quem ativa o contrato) usando msg.sender.
+        _safeMint(msg.sender, newItemId);
+        // Designa os dados do NFT.
+        _setTokenURI(newItemId, "data:application/json;base64,ewogICJuYW1lIjogIkpvdXJuZXkgd2l0aCBQb2tlbW9ucyIsCiAgImRlc2NyaXB0aW9uIjogIkFuIE5GVCB3aXRoIGEgUG9rZW1vbnMgd2hpY2ggbWF0Y2hlcyB5b3VyIHBlcnNvbmFsaXR5ISIsCiAgImltYWdlIjogImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjNhV1IwYUQwaU5EQXdJaUJvWldsbmFIUTlJakl3TUNJZ2VHMXNibk05SW1oMGRIQTZMeTkzZDNjdWR6TXViM0puTHpJd01EQXZjM1puSWlCNGJXeHVjenA0YkdsdWF6MGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNVGs1T1M5NGJHbHVheUkrQ2lBZ1BIUmxlSFFnZUQwaU1qQWlJSGs5SWpVd0lpQm1iMjUwTFhOcGVtVTlJakl3SWlCbWFXeHNQU0lqTURBd0lqNURhR0Z5YldGdVpHVnlQQzkwWlhoMFBnb2dJRHgwWlhoMElIZzlJakUxTUNJZ2VUMGlOVEFpSUdadmJuUXRjMmw2WlQwaU1qQWlJR1pwYkd3OUlpTXdNREFpUGtKMWJHSmhjMkYxY2p3dmRHVjRkRDRLSUNBOGRHVjRkQ0I0UFNJeU9EQWlJSGs5SWpVd0lpQm1iMjUwTFhOcGVtVTlJakl3SWlCbWFXeHNQU0lqTURBd0lqNVRjWFZwY25Sc1pUd3ZkR1Y0ZEQ0S0lDQThhVzFoWjJVZ2VHeHBibXM2YUhKbFpqMGlhSFIwY0hNNkx5OXlZWGN1WjJsMGFIVmlkWE5sY21OdmJuUmxiblF1WTI5dEwyMWhjbU4xYzNacGJtbGphWFZ6TVRjNEwzTndjbWwwWlhNdmJXRnpkR1Z5TDNOd2NtbDBaWE12Y0c5clpXMXZiaTgwTG5CdVp5SWdlRDBpTWpBaUlIazlJall3SWlCM2FXUjBhRDBpTmpBaUlHaGxhV2RvZEQwaU5qQWlMejRLSUNBOGFXMWhaMlVnZUd4cGJtczZhSEpsWmowaWFIUjBjSE02THk5eVlYY3VaMmwwYUhWaWRYTmxjbU52Ym5SbGJuUXVZMjl0TDIxaGNtTjFjM1pwYm1samFYVnpNVGM0TDNOd2NtbDBaWE12YldGemRHVnlMM053Y21sMFpYTXZjRzlyWlcxdmJpOHhMbkJ1WnlJZ2VEMGlNVFV3SWlCNVBTSTJNQ0lnZDJsa2RHZzlJall3SWlCb1pXbG5hSFE5SWpZd0lpOCtDaUFnUEdsdFlXZGxJSGhzYVc1ck9taHlaV1k5SW1oMGRIQnpPaTh2Y21GM0xtZHBkR2gxWW5WelpYSmpiMjUwWlc1MExtTnZiUzl0WVhKamRYTjJhVzVwWTJsMWN6RTNPQzl6Y0hKcGRHVnpMMjFoYzNSbGNpOXpjSEpwZEdWekwzQnZhMlZ0YjI0dk55NXdibWNpSUhnOUlqSTRNQ0lnZVQwaU5qQWlJSGRwWkhSb1BTSTJNQ0lnYUdWcFoyaDBQU0kyTUNJdlBnbzhMM04yWno0SyIKfQ==");
+        console.log("Um NFT com o ID %s foi mintado para %s", newItemId, msg.sender);
+        // Incrementa o contador para quando o próximo NFT for mintado.
+        _tokenIds.increment();
+    }
+}
